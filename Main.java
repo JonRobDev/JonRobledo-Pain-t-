@@ -5,6 +5,7 @@
  */
 package paint.jrobledo;
 
+import java.io.FileNotFoundException;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -15,7 +16,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
     
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws FileNotFoundException {
         //Instantiates the app GUI
         PaintGUI app = new PaintGUI(primaryStage);
     }
