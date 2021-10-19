@@ -8,7 +8,6 @@ package paint.jrobledo;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -53,6 +52,14 @@ public class PaintGUI {
     int curTab = 0;
     
     Image image;
+    
+    /**
+    *   PaintGUI is the constructor that sets up the canvas and canvas alignment, as well as displaying the menu, scene, etc. onto the current scene.
+    *   
+    *   @param appStage     Sets the Stage that the application wants to access.
+    * 
+    *   @author Jonathan R.
+    */
     
     public PaintGUI(Stage appStage) throws FileNotFoundException{
         
@@ -150,6 +157,10 @@ public class PaintGUI {
             }  
         });
         
+        /* 
+        
+        we'll figure this out eventually 
+        
         appStage.widthProperty().addListener((obs, oldVal, newVal) -> {
             imgX = menuBar.GetX();
             System.out.println(imgX);
@@ -193,8 +204,6 @@ public class PaintGUI {
             toolsMenu.dimensions[0] = imgX;
             toolsMenu.dimensions[1] = imgY;
             
-            //System.out.println("Canvas Pane Width: " + canvasPane.getWidth());
-            
             grid.setPrefWidth( appStage.getWidth() );
             
             if ( ( imgX * ( toolsMenu.zoomSlider.getValue() / 100 ) ) > imagePane.getWidth()) { 
@@ -221,7 +230,7 @@ public class PaintGUI {
             }       
         });
         
-        /*
+        
         
         imagePane.addEventHandler(EventType.ROOT, e -> {
             if ( ( canvasPane.getWidth() * ( toolsMenu.zoomSlider.getValue() / 100 ) ) > imagePane.getWidth()) { 
