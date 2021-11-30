@@ -18,7 +18,6 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
 
@@ -139,13 +138,16 @@ public class DrawingTools{
         }
         
         writableImage = new WritableImage((int)canvas.getWidth(), (int)canvas.getHeight());
-        canvas.snapshot(null, writableImage);
+        canvas.snapshot(sp, writableImage);
         
         g.setLineWidth(lineWidth);
+        
+        x2 = x1;
+        y2 = y1;
     }
     
     /**
-    * <p> Grabs the current position of the mouse and live draws shapes based on the dimensions of x1, x2, y1, and y2. </p>
+//    * <p> Grabs the current position of the mouse and live draws shapes based on the dimensions of x1, x2, y1, and y2. </p>
     * @since 0.6.0
     * @param e          The mouse event of the current canvas.
     */
@@ -153,15 +155,13 @@ public class DrawingTools{
     public void OnDrag(MouseEvent e){
         if (isHeld == false) return;
             
-        if (toggleButtons[0].isSelected() == true || toggleButtons[9].isSelected() == true) {
+        if (toggleButtons[0].isSelected() == true || toggleButtons[1].isSelected() == true || toggleButtons[9].isSelected() == true) {
             x1 = (int)e.getX();
             y1 = (int)e.getY();
-            if( toggleButtons[0].isSelected() == true )g.strokeLine(x2, y2, x1, y1);
-            if( toggleButtons[9].isSelected() == true )g.drawImage(savedImage, savedX, savedY, savedWidth, savedHeight, x1, y1, savedWidth, savedHeight );
-        }else if (toggleButtons[1].isSelected() == true){
-            g.clearRect(x2 - (lineWidth/2), y2 - (lineWidth/2), lineWidth, lineWidth);
+            if( toggleButtons[0].isSelected() == true ) g.strokeLine(x2, y2, x1, y1);
+            if( toggleButtons[9].isSelected() == true ) g.drawImage(savedImage, savedX, savedY, savedWidth, savedHeight, x1, y1, savedWidth, savedHeight );
+            if( toggleButtons[1].isSelected() == true ) g.clearRect(x2 - (lineWidth/2), y2 - (lineWidth/2), lineWidth, lineWidth);
         }else{
-            
             x2 = (int)e.getX();
             y2 = (int)e.getY();
             
@@ -349,6 +349,7 @@ public class DrawingTools{
         y2 = (int)e.getY();
         
         g.drawImage(writableImage, 0, 0);
+        
            
         if( y1 > y2 && toggleButtons[7].isSelected() == true) {
             if( x1 > x2 ){
@@ -476,7 +477,7 @@ public class DrawingTools{
         if(key.isControlDown()){
             if(key.getCode() == KeyCode.C){
                 copyImg = new WritableImage((int)canvas.getWidth(), (int)canvas.getHeight());
-                canvas.snapshot(null, copyImg);
+                canvas.snapshot(sp, copyImg);
             }
             if(key.getCode() == KeyCode.V){
                 if(copyImg != null){
@@ -487,6 +488,8 @@ public class DrawingTools{
             }
         }
     }
+    
+    
     
     /**
     * <p> Sets the current position of the mouse based on the parameters, updating them when called. </p>
@@ -508,5 +511,9 @@ public class DrawingTools{
     
     public void GetLineWidth(double curLineWide){
         lineWidth = curLineWide;
+    }
+    
+    public void SetSides(int sideCnt){
+        sides = sideCnt;
     }
 }
