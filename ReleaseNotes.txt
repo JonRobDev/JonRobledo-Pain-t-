@@ -1,0 +1,19 @@
+Jon's Pain(t) Version 1.0.0 -  11/19/2021
+
+Bug Fixes:
+  * Zoom is working properly, ScrollPane changes to fit content properly now
+  * Fixed issue with select and pattern brush not working
+  * Threading fixes
+  * Fixed issue with pencil where a line would be drawn between the last time you released your mouse and your next click
+  * Select tool should now leave a transparent background
+  * Slight improvements to copy-paste placement
+  * About 400 lines shaved off the whole project
+  * Removed unnecessary event handlers and libraries 
+  * Fixed redo stack mixing together with the undo stack in the event of overflow
+
+LINKS:
+
+  * Github - https://github.com/JonRobDev/JonRobledo-Pain-t-
+  * Demo Video - 
+  
+

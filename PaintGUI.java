@@ -6,10 +6,13 @@
 package paint.jrobledo;
 
 import java.io.FileNotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
@@ -27,7 +30,6 @@ import javafx.scene.layout.GridPane;
 //LAYOUT
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 
@@ -40,7 +42,7 @@ import paint.jrobledo.Menu.TopMenu;
 
 /**
  *
- * @author acoff
+ * @author Jonathan Robledo
  */
 public class PaintGUI {
     
@@ -49,9 +51,15 @@ public class PaintGUI {
     double imgX = 600;
     double imgY = 600;
     
+    double zoomVal;
+    
     int curTab = 0;
     
     Image image;
+    
+    //Pane declarations
+    GridPane grid = new GridPane();
+    ScrollPane imagePane = new ScrollPane();
     
     /**
     *   PaintGUI is the constructor that sets up the canvas and canvas alignment, as well as displaying the menu, scene, etc. onto the current scene.
@@ -64,7 +72,6 @@ public class PaintGUI {
     public PaintGUI(Stage appStage) throws FileNotFoundException{
         
         //Grid propertiess
-        GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(10,10,10,10));
         grid.setGridLinesVisible(false);
@@ -84,14 +91,13 @@ public class PaintGUI {
         grid.add(canvas, 1, 1);
         
         //ScrollPane setup
-        
-        ScrollPane imagePane = new ScrollPane();
-        imagePane.setPrefSize(600, 600);
         imagePane.setContent(grid);
         
-        //Menu setup (Bar, menu, items
+        StackPane root = new StackPane();
         
-        TopMenu menuBar = new TopMenu(canvas, g, sp, appStage, imagePane);
+        //Menu setup (Bar, menu, items)
+        
+        TopMenu menuBar = new TopMenu(canvas, g, sp, appStage, grid, imagePane, root);
         ToolsMenu toolsMenu = new ToolsMenu(canvas, g, menuBar, grid, appStage);
         MenuBar menu = menuBar.GetMenu();
         
@@ -100,7 +106,6 @@ public class PaintGUI {
         appBox.getChildren().addAll(menu, toolsMenu.toolBox, imagePane, toolsMenu.zoom);
         
         //Application StackPane and scene
-        StackPane root = new StackPane();
         root.getChildren().addAll(appBox);
         
         Scene scene = new Scene(root, 1280, 720);
@@ -108,146 +113,16 @@ public class PaintGUI {
         //Stage settings
         appStage.setTitle(menuBar.returnTitle());
         appStage.setScene(scene);
-        
-        //ImgBox resizing
-        if (canvas.getWidth() > appStage.getWidth()) imagePane.setPrefWidth(appStage.getWidth() );
-        if (canvas.getHeight() > appStage.getHeight()) imagePane.setPrefHeight( appStage.getHeight() - 100 );
             
         appStage.show();
         
-        //Let's see if this works
-        if ( ( canvas.getWidth() * ( toolsMenu.zoomSlider.getValue() / 100 ) ) > imagePane.getWidth()) { 
-                imagePane.setPrefWidth( appStage.getWidth() ); 
-            } else { 
-                imagePane.setPrefWidth(  imgX * toolsMenu.zoomSlider.getValue() ); 
-            }
+        toolsMenu.zoomSlider.valueProperty().addListener(e -> {          
+            grid.setPrefWidth(  menuBar.imgX * (menuBar.zoomVal / 100) ); 
+            grid.setPrefHeight(  menuBar.imgY * (menuBar.zoomVal / 100) ); 
             
-            if ( ( canvas.getHeight() * ( toolsMenu.zoomSlider.getValue() / 100 ) ) > imagePane.getHeight()) { 
-                imagePane.setPrefHeight( appStage.getHeight() - 100 ); 
-            } else { 
-                imagePane.setPrefHeight( imgY * toolsMenu.zoomSlider.getValue() ); 
-            }   
-        
-        //Stage image resizing
-        
-        grid.setPrefWidth( appStage.getWidth() );
-        grid.setPrefHeight( appStage.getHeight());
-        
-        toolsMenu.zoomSlider.valueProperty().addListener(e -> {
+            imagePane.setContent(grid);
             
-            toolsMenu.dimensions[0] = imgX;
-            toolsMenu.dimensions[1] = imgY;
-            
-            imgX = menuBar.GetX();
-            System.out.println("Canvas Pane Width: " + imgX);
-            
-            imgY = menuBar.GetY();
-            System.out.println("Canvas Pane Height: " + imgY);
-
-            if ( ( imgX * ( toolsMenu.zoomSlider.getValue() / 100 ) ) > imagePane.getWidth()) { 
-                imagePane.setPrefWidth( appStage.getWidth() ); 
-            } else { 
-                imagePane.setPrefWidth(  imgX * toolsMenu.zoomSlider.getValue() ); 
-            }
-            
-            if ( ( imgY * ( toolsMenu.zoomSlider.getValue() / 100 ) ) > imagePane.getHeight()) { 
-                imagePane.setPrefHeight( appStage.getHeight() - 100 ); 
-            } else { 
-                imagePane.setPrefHeight( imgY * toolsMenu.zoomSlider.getValue() ); 
-            }  
-        });
-        
-        /* 
-        
-        we'll figure this out eventually 
-        
-        appStage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            imgX = menuBar.GetX();
-            System.out.println(imgX);
-            
-            toolsMenu.dimensions[0] = imgX;
-            toolsMenu.dimensions[1] = imgY;
-            
-            //System.out.println("Canvas Pane Width: " + canvasPane.getWidth());
-            
-            grid.setPrefWidth( appStage.getWidth() );
-            
-            if ( ( imgX * ( toolsMenu.zoomSlider.getValue() / 100 ) ) > imagePane.getWidth()) { 
-                imagePane.setPrefWidth( appStage.getWidth() ); 
-            } else { 
-                imagePane.setPrefWidth(  imgX * toolsMenu.zoomSlider.getValue() ); 
-            }
-        });
-
-        appStage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            imgY = menuBar.GetY();
-            System.out.println("Canvas Pane Height: " + imgY);
-            
-            toolsMenu.dimensions[0] = imgX;
-            toolsMenu.dimensions[1] = imgY;
-            
-            
-            grid.setPrefHeight( canvas.getHeight() );
-            
-            if ( ( imgY * ( toolsMenu.zoomSlider.getValue() / 100 ) ) > imagePane.getHeight()) { 
-                imagePane.setPrefHeight( appStage.getHeight() - 100 ); 
-            } else { 
-                imagePane.setPrefHeight( imgY * toolsMenu.zoomSlider.getValue() ); 
-            }   
-            
-        });
-        
-        canvas.widthProperty().addListener((obs, oldVal, newVal) -> {
-            imgX = menuBar.GetX();
-            System.out.println(imgX);
-            
-            toolsMenu.dimensions[0] = imgX;
-            toolsMenu.dimensions[1] = imgY;
-            
-            grid.setPrefWidth( appStage.getWidth() );
-            
-            if ( ( imgX * ( toolsMenu.zoomSlider.getValue() / 100 ) ) > imagePane.getWidth()) { 
-                imagePane.setPrefWidth( appStage.getWidth() ); 
-            } else { 
-                imagePane.setPrefWidth(  imgX * toolsMenu.zoomSlider.getValue() ); 
-            }
-        });
-
-        canvas.heightProperty().addListener((obs, oldVal, newVal) -> {
-            imgY = menuBar.GetY();
-            System.out.println("Canvas Pane Height: " + imgY);
-            
-            toolsMenu.dimensions[0] = imgX;
-            toolsMenu.dimensions[1] = imgY;
-            
-            
-            grid.setPrefHeight( canvas.getHeight() );
-            
-            if ( ( imgY * ( toolsMenu.zoomSlider.getValue() / 100 ) ) > imagePane.getHeight()) { 
-                imagePane.setPrefHeight( appStage.getHeight() - 100 ); 
-            } else { 
-                imagePane.setPrefHeight( imgY * toolsMenu.zoomSlider.getValue() ); 
-            }       
-        });
-        
-        
-        
-        imagePane.addEventHandler(EventType.ROOT, e -> {
-            if ( ( canvasPane.getWidth() * ( toolsMenu.zoomSlider.getValue() / 100 ) ) > imagePane.getWidth()) { 
-                imagePane.setPrefWidth( canvas.getWidth() ); 
-                grid.setPrefWidth( appStage.getWidth() );
-            } else { 
-                imagePane.setPrefWidth( canvas.getWidth() * ( toolsMenu.zoomSlider.getValue() / 100 ) ); 
-                grid.setPrefWidth( canvas.getWidth() * ( toolsMenu.zoomSlider.getValue() / 100 ) );
-            }
-            
-            if ( ( canvasPane.getHeight() * ( toolsMenu.zoomSlider.getValue() / 100 ) ) > imagePane.getHeight()) { 
-                imagePane.setPrefHeight( canvas.getHeight()); 
-                grid.setPrefHeight( appStage.getHeight());
-            } else { 
-                imagePane.setPrefHeight( canvas.getHeight() * ( toolsMenu.zoomSlider.getValue() / 100 ) ); 
-                grid.setPrefHeight( canvas.getHeight() * ( toolsMenu.zoomSlider.getValue() / 100 ) );
-            }    
-        }); */
-    }
+            imagePane.setPrefSize(scene.getWidth() - 100, scene.getHeight() - 100);
+        }); 
+    }  
 }

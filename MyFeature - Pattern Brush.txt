@@ -1,0 +1,4 @@
+The Pattern Brush feature adds the ability to draw with the
+piece of your image taken from the select tool, so once you 
+make a selection with the tool active, you'll start repeatedly
+drawing with that piece as if it were its own brush.
