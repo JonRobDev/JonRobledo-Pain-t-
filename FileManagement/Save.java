@@ -11,12 +11,9 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
@@ -24,13 +21,21 @@ import paint.jrobledo.PaintGUI;
 
 /**
  *
- * @author acoff
+ * @author Jonathan Robledo
  */
-public final class Save {
+public final class Save extends Thread{
     String imgLocation;
     SnapshotParameters sp;
     Canvas canvas;
-    
+    /**
+    *   Save is the constructor used to save an image based on the current directory selected.
+    *   
+    *   @param imgLocation      Sets the current string which contains the directory to be saved to
+    *   @param sp               Sets the current SnapshotParameters
+    *   @param canvas           Sets the current active Canvas.
+    * 
+    *   @author Jonathan R.
+    */
     public Save(String imgLocation, SnapshotParameters sp, Canvas canvas){
         this.imgLocation = imgLocation;
         this.sp = sp;
@@ -38,6 +43,11 @@ public final class Save {
         
         Save();
     }
+    
+    /**
+    * <p>Saves the current image. </p>
+    * @since 0.3.0
+    */
     
     public void Save(){
         FileChooser imgExplorer = new FileChooser();

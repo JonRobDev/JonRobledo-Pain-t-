@@ -9,14 +9,11 @@ import java.io.File;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-
 
 /**
  *
- * @author acoff
+ * @author Jonathan Robledo
  */
 public final class Open {
     
@@ -28,6 +25,18 @@ public final class Open {
     
     Image image;
     
+    /**
+    *   Save is the constructor used to save an image based on the current directory selected.
+    *  
+    *   @param canvas           Sets the current active Canvas.
+    *   @param g                Sets the current active GraphicsContext.
+    *   @param imgLocation      Sets the current string which contains the directory to be saved to.
+    *   @param imgX             Sets the indicated width of the image.
+    *   @param imgY             Sets the indicated height of the image.
+    * 
+    *   @author Jonathan R.
+    */
+    
     public Open(Canvas canvas, GraphicsContext g, String imgLocation, double imgX, double imgY){
         this.canvas = canvas;
         this.g = g;
@@ -37,6 +46,11 @@ public final class Open {
         
         Open();
     }
+    
+    /**
+    * <p> Opens an image to display on the canvas via the File Explorer. </p>
+    * @since 0.2.0
+    */
     
     public void Open(){
         g.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -65,10 +79,6 @@ public final class Open {
                 canvas.setHeight(y);
                 canvas.setWidth(x);
                 
-                /*imageBox.setFitHeight(img.getHeight());
-                imageBox.setFitWidth(img.getWidth());
-                imageBox.setImage(img);*/
-                
                 g.drawImage(image, 0, 0);
                 
                 imgX = img.getWidth();
@@ -76,15 +86,30 @@ public final class Open {
             }
     }
     
+    /**
+    * <p> Returns dimensions of the image being currently opened. </p>
+    * @return double[]
+    * @since 0.3.0
+    */
     public double[] GetDimensions(){
         double[] dimensions = {imgX, imgY};
         return dimensions;
     }
     
+    /**
+    * <p> Returns the directory of the image being opened. </p>
+    * @return String
+    * @since 0.3.0
+    */
     public String returnDir(){
         return imgLocation;
     }
     
+    /**
+    * <p> Returns the current image being opened. </p>
+    * @return Image
+    * @since 0.3.0
+    */
     public Image returnImg(){
         return image;
     }

@@ -14,7 +14,6 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
@@ -22,13 +21,23 @@ import paint.jrobledo.PaintGUI;
 
 /**
  *
- * @author acoff
+ * @author Jonathan Robledo
  */
 public final class SaveAs {
     
     String imgLocation;
     SnapshotParameters sp;
     Canvas canvas;
+    
+    /**
+    *   Save AS is the constructor used to save an image to a different directory from the original.
+    *   
+    *   @param imgLocation      Sets the current string which contains the directory to be saved to
+    *   @param sp               Sets the current SnapshotParameters
+    *   @param canvas           Sets the current active Canvas.
+    * 
+    *   @author Jonathan R.
+    */
     
     public SaveAs(String imgLocation, SnapshotParameters sp, Canvas canvas){
         this.imgLocation = imgLocation;
@@ -37,6 +46,11 @@ public final class SaveAs {
         
         SaveAs();
     }
+    
+    /**
+    * <p>Saves the current image to a new directory via the File Explorer. </p>
+    * @since 0.3.0
+    */
     
     public void SaveAs(){
         FileChooser imgExplorer = new FileChooser();
