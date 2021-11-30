@@ -17,6 +17,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -26,21 +27,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import paint.jrobledo.Tools.Arc;
 
-
-import paint.jrobledo.Tools.DrawLine;
-import paint.jrobledo.Tools.Pencil;
-import paint.jrobledo.Tools.Rect;
-import paint.jrobledo.Tools.Ellipse;
-import paint.jrobledo.Tools.Eraser;
-import paint.jrobledo.Tools.NPoly;
-import paint.jrobledo.Tools.Select;
-import paint.jrobledo.Tools.TextDraw;
+import paint.jrobledo.Tools.DrawingTools;
 
 /**
  *
- * @author acoff
+ * @author Jonathan Robledo
  */
 public class ToolsMenu {
     
@@ -57,63 +49,118 @@ public class ToolsMenu {
     
     WritableImage wi;
     
+    int sidesCnt;
+    
+    /**
+    *   ToolsMenu is a constructor which contains all of the UI elements for the toolbox along with executing the required methods from DrawingTools. 
+    *   
+    *   @param canvas    Sets the currently available canvas.
+    *   @param g         Sets the main accessible GraphicsContext.
+    *   @param menuTop   Declared to allow access to pass/receive values from the TopMenu.
+    *   @param grid      Sets the GridPane that will be rescaled.
+    *   @param stage     Sets the Stage that the toolbox needs to access.
+    * 
+    *   @author Jonathan R.
+    */
+    
     public ToolsMenu(Canvas canvas, GraphicsContext g, TopMenu menuTop, GridPane grid, Stage stage) throws FileNotFoundException{
         
         //Image stacks for undo/redo
         Stack<Image> undo = new Stack<Image>();
         Stack<Image> redo = new Stack<Image>();
         
+        // Icon loading
         
         
-        // Ucon loading
-        InputStream penICN = new FileInputStream("D:/Java Projects/Pain(t)/src/paint/jrobledo/Icons/pencil.png");
-        InputStream lineICN = new FileInputStream("D:/Java Projects/Pain(t)/src/paint/jrobledo/Icons/line.png");
-        InputStream rectICN = new FileInputStream("D:/Java Projects/Pain(t)/src/paint/jrobledo/Icons/rect.png");
-        InputStream ovalICN = new FileInputStream("D:/Java Projects/Pain(t)/src/paint/jrobledo/Icons/oval.png");
-        InputStream pickerICN = new FileInputStream("D:/Java Projects/Pain(t)/src/paint/jrobledo/Icons/dropper.png");
-        InputStream selectedICN = new FileInputStream("D:/Java Projects/Pain(t)/src/paint/jrobledo/Icons/selected.png");
-        InputStream textICN = new FileInputStream("D:/Java Projects/Pain(t)/src/paint/jrobledo/Icons/text.png");
-        InputStream eraserICN = new FileInputStream("D:/Java Projects/Pain(t)/src/paint/jrobledo/Icons/eraser.png");
-        InputStream arcICN = new FileInputStream("D:/Java Projects/Pain(t)/src/paint/jrobledo/Icons/arc.png");
-        InputStream selectICN = new FileInputStream("D:/Java Projects/Pain(t)/src/paint/jrobledo/Icons/select.png");
-        InputStream polyICN = new FileInputStream("D:/Java Projects/Pain(t)/src/paint/jrobledo/Icons/poly.png");
+        InputStream penICN = new FileInputStream("src/paint/jrobledo/Icons/pencil.png");
+        InputStream lineICN = new FileInputStream("src/paint/jrobledo/Icons/line.png");
+        InputStream rectICN = new FileInputStream("src/paint/jrobledo/Icons/rect.png");
+        InputStream ovalICN = new FileInputStream("src/paint/jrobledo/Icons/oval.png");
+        InputStream pickerICN = new FileInputStream("src/paint/jrobledo/Icons/dropper.png");
+        InputStream selectedICN = new FileInputStream("src/paint/jrobledo/Icons/selected.png");
+        InputStream textICN = new FileInputStream("src/paint/jrobledo/Icons/text.png");
+        InputStream eraserICN = new FileInputStream("src/paint/jrobledo/Icons/eraser.png");
+        InputStream arcICN = new FileInputStream("src/paint/jrobledo/Icons/arc.png");
+        InputStream selectICN = new FileInputStream("src/paint/jrobledo/Icons/select.png");
+        InputStream polyICN = new FileInputStream("src/paint/jrobledo/Icons/poly.png");
+        InputStream patternICN = new FileInputStream("src/paint/jrobledo/Icons/patternbrush.png");
 
         
         Image selected = new Image(selectedICN);
         Image notselected = new Image(rectICN);
         
+        Tooltip penTip = new Tooltip("Pencil");
+        Tooltip lineTip = new Tooltip("Line");
+        Tooltip rectTip = new Tooltip("Rectangle");
+        Tooltip ovalTip = new Tooltip("Ellipse");
+        Tooltip selectTip = new Tooltip("Select and Move");
+        Tooltip textTip = new Tooltip("Text");
+        Tooltip eraserTip = new Tooltip("Eraser");
+        Tooltip arcTip = new Tooltip("Arc/Semicircle");
+        Tooltip colorTip = new Tooltip("Color Dropper");
+        Tooltip polyTip = new Tooltip("Polygon");
+        Tooltip pBTip = new Tooltip("Pattern brush");
+        
         //Tool buttons
+        //-- PENCIL --
         ToggleButton pencil = new ToggleButton();
         pencil.setGraphic(new ImageView( new Image ( penICN ) ) );
+        Tooltip.install(pencil, penTip);
         
+        //-- ERASER --
         ToggleButton eraser = new ToggleButton();
         eraser.setGraphic(new ImageView( new Image ( eraserICN ) ) );
+        Tooltip.install(eraser, eraserTip);
         
+        //-- LINE TOOL --
         ToggleButton line = new ToggleButton();
         line.setGraphic(new ImageView( new Image ( lineICN ) ) );
+        Tooltip.install(line, lineTip);
         
+        //-- RECT --
         ToggleButton rect = new ToggleButton();
         rect.setGraphic(new ImageView( notselected ) );
+        Tooltip.install(rect, rectTip);
         
+        //-- OVAL --
         ToggleButton oval = new ToggleButton();
         oval.setGraphic(new ImageView( new Image ( ovalICN ) ) );
+        Tooltip.install(oval, ovalTip);
         
+        //-- --
         ToggleButton arc = new ToggleButton();
         arc.setGraphic(new ImageView( new Image ( arcICN ) ) );
+        Tooltip.install(arc, arcTip);
         
+        //-- POLYGON --
         ToggleButton poly = new ToggleButton();
         poly.setGraphic(new ImageView( new Image ( polyICN ) ) );
+        Tooltip.install(poly, polyTip);
         
+        //-- SELECT TOOL --
         ToggleButton select = new ToggleButton();
         select.setGraphic(new ImageView( new Image ( selectICN ) ) );
+        Tooltip.install(select, selectTip);
         
+        //-- TEXT TOOL --
         ToggleButton textBtn = new ToggleButton();
         textBtn.setGraphic(new ImageView( new Image ( textICN ) ) );
+        Tooltip.install(textBtn, textTip);
         
+        //-- PATTERN BRUSH --
+        ToggleButton patternBrush = new ToggleButton();
+        patternBrush.setGraphic(new ImageView( new Image ( patternICN ) ) );
+        Tooltip.install(patternBrush, pBTip);
+        
+        //-- COLOR DORRPER --
         ToggleButton dropper = new ToggleButton();
         dropper.setGraphic(new ImageView( new Image ( pickerICN ) ) );
+        Tooltip.install(dropper, colorTip);
          
+        
         ToggleGroup toolGroup = new ToggleGroup();
+        
+        ToggleButton[] toggleArray = {pencil, eraser, line, rect, oval, arc, poly, select, textBtn, patternBrush};
         
         
         //Fill toggle
@@ -133,10 +180,8 @@ public class ToolsMenu {
         
         //Polygon settings
         TextField sides = new TextField("8");
-        TextField radius = new TextField("8");
         
-        int sidesCnt = Integer.parseInt( sides.getText() );
-        int radiusLen = Integer.parseInt( radius.getText() );
+        sidesCnt = Integer.parseInt( sides.getText() );
         
         //Zoom slider setup
         zoomSlider = new Slider(10, 400, 100);
@@ -144,7 +189,8 @@ public class ToolsMenu {
         
         zoom = new HBox();
         Label zoomTxt = new Label("Zoom: ");
-        zoom.getChildren().addAll(zoomTxt, zoomSlider, sides, radius);
+        Label sidesTxt = new Label("  Polygon Sides: ");
+        zoom.getChildren().addAll(zoomTxt, zoomSlider, sidesTxt, sides);
         
         //Grouping
         line.setToggleGroup(toolGroup);
@@ -153,31 +199,27 @@ public class ToolsMenu {
         oval.setToggleGroup(toolGroup);
         textBtn.setToggleGroup(toolGroup);
         dropper.setToggleGroup(toolGroup);
+        patternBrush.setToggleGroup(toolGroup);
         eraser.setToggleGroup(toolGroup);
         arc.setToggleGroup(toolGroup);
         select.setToggleGroup(toolGroup);
         poly.setToggleGroup(toolGroup);
         
-        DrawLine lineTool = new DrawLine(canvas, g, line, lineWidth);
-        Pencil pencilTool = new Pencil(canvas, g, pencil, lineWidth); 
-        Eraser eraserTool = new Eraser(canvas, g, eraser, lineWidth); 
-        Rect rectTool = new Rect(canvas, g, rect, lineWidth);
-        Ellipse ovalTool = new Ellipse(canvas, g, oval, lineWidth);
-        Arc arcTool = new Arc(canvas, g, arc, lineWidth);
-        Select selectTool = new Select(canvas, g, select, lineWidth);
-        TextDraw textTool = new TextDraw (canvas, g, textBtn, lineWidth);
-        NPoly nPoly = new NPoly(canvas, g, textBtn, lineWidth, sidesCnt, radiusLen);
+        //NEW TOOLS
+        DrawingTools drawingTools = new DrawingTools(canvas, g, toggleArray, fill, lineWidth, sidesCnt);
         
         toolBox = new HBox();
         Label widthTxt = new Label("  Stroke Width: ");
         Label colorTxt = new Label("  Stroke Color: ");
         Label fillTxt = new Label("  Fill Color: ");
-        toolBox.getChildren().addAll(pencil, eraser, line, rect, oval, arc, poly, textBtn, dropper, select, colorTxt, strokePicker, fillTxt, fillPicker, widthTxt, widthSlider, fill);
+        toolBox.getChildren().addAll(pencil, eraser, line, rect, oval, arc, poly, patternBrush, textBtn, dropper, select, colorTxt, strokePicker, fillTxt, fillPicker, widthTxt, widthSlider, fill);
         
         //UI Event stuff
         zoomSlider.valueProperty().addListener(e -> {
             grid.setScaleX(zoomSlider.getValue() / 100);
             grid.setScaleY(zoomSlider.getValue() / 100);
+            
+            menuTop.zoomVal = zoomSlider.getValue();
         });
         
         fill.setOnAction(e -> {
@@ -195,42 +237,35 @@ public class ToolsMenu {
             
             lineWidth = widthSlider.getValue();
             
-            if( textBtn.isSelected() == true) textTool.onClick(e, lineWidth);
-            lineTool.onClick(e, lineWidth);
-            eraserTool.OnClick(e, lineWidth);
-            pencilTool.OnClick(e, lineWidth);
-            ovalTool.onClick(e, lineWidth);
-            rectTool.onClick(e, lineWidth);
-            arcTool.onClick(e, lineWidth);
-            selectTool.onClick(e, lineWidth);
-            nPoly.onClick(e, lineWidth);
+            drawingTools.GetLineWidth(lineWidth);
+            
+            drawingTools.onClick(e);
             
             wi = new WritableImage((int)canvas.getWidth(), (int)canvas.getHeight());
             canvas.snapshot(null, wi);
             
             undo.push(wi);
             
+            sidesCnt = Integer.parseInt( sides.getText() );
+            drawingTools.SetSides(sidesCnt);
+            
         });
+        
         canvas.setOnMouseDragged( e -> {
             
-            if( line.isSelected() == true) lineTool.onDrag(e);
-            if( eraser.isSelected() == true) eraserTool.OnDrag(e);
-            pencilTool.OnDrag(e);
-            if( oval.isSelected() == true) ovalTool.onDrag(e, fill);
-            if( rect.isSelected() == true) rectTool.onDrag(e, fill);
-            if( arc.isSelected() == true) arcTool.onDrag(e, fill);
-            if( select.isSelected() == true) selectTool.onDrag(e, fill);
+            drawingTools.GetLineWidth(lineWidth);
+            
+            sidesCnt = Integer.parseInt( sides.getText() );
+            drawingTools.OnDrag(e);
+
         });
+        
         canvas.setOnMouseReleased( e -> {
-           
-            if( line.isSelected() == true) lineTool.onRelease(e);
-            if( eraser.isSelected() == true) eraserTool.OnRelease(e);
-            pencilTool.OnRelease(e);
-            if( oval.isSelected() == true) ovalTool.onRelease(e, fill);
-            if( rect.isSelected() == true) rectTool.onRelease(e, fill);
-            if( arc.isSelected() == true) arcTool.onRelease(e, fill);
-            if( select.isSelected() == true) selectTool.onRelease(e, fill);
-            if( poly.isSelected() == true) nPoly.OnRelease(e, sidesCnt, radiusLen);
+            
+            drawingTools.GetLineWidth(lineWidth);
+            
+            sidesCnt = Integer.parseInt( sides.getText() );
+            drawingTools.OnRelease(e);
             
             if(dropper.isSelected() == true){
                 img = menuTop.returnImg();
@@ -262,8 +297,11 @@ public class ToolsMenu {
                 }
             }
             
-            if( select.isSelected() == true) selectTool.Move(key);
-            if( textBtn.isSelected() == true) textTool.onRelease(key, lineWidth);
+            if( select.isSelected() == true) {
+                drawingTools.Move(key);
+                drawingTools.CopyPaste(key);
+            }
+            if( textBtn.isSelected() == true) drawingTools.DrawText(key);
         });
         
         strokePicker.setOnAction(e -> {
@@ -275,6 +313,6 @@ public class ToolsMenu {
             Color color = fillPicker.getValue();
             g.setFill(color);
         });
-        
     }
+    
 }
